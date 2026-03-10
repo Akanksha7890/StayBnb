@@ -60,58 +60,48 @@ export const findListing= async (req,res) => {
     }
     
 }
-export const updateListing = async (req,res) => {
+// updateListing mein safe return add karo
+export const updateListing = async (req, res) => {
     try {
-        let image1;
-        let image2;
-        let image3;
-        let {id} = req.params;
-        let {title,description,rent,city,landMark,category} = req.body
-        if(req.files.image1){
-        image1 = await uploadOnCloudinary(req.files.image1[0].path)}
-        if(req.files.image2)
-        {image2 = await uploadOnCloudinary(req.files.image2[0].path)}
-        if(req.files.image3){
-        image3 = await uploadOnCloudinary(req.files.image3[0].path)}
-
-        let listing = await Listing.findByIdAndUpdate(id,{
-            title,
-            description,
-            rent,
-            city,
-            landMark,
-            category,
-            image1,
-            image2,
-            image3,
-            
-        },{new:true})
+        let { id } = req.params;
+        let { title, description, rent, city, landMark, category } = req.body;
         
-        return res.status(201).json(listing)
-       
+        let updateData = { title, description, rent, city, landMark, category };
+
+        // Images sirf tabhi upload karo agar files exist karti hain
+        if (req.files?.image1) updateData.image1 = await uploadOnCloudinary(req.files.image1[0].path);
+        if (req.files?.image2) updateData.image2 = await uploadOnCloudinary(req.files.image2[0].path);
+        if (req.files?.image3) updateData.image3 = await uploadOnCloudinary(req.files.image3[0].path);
+
+        let listing = await Listing.findByIdAndUpdate(id, updateData, { new: true });
+        
+        if (!listing) return res.status(404).json({ message: "Listing not found" });
+
+        return res.status(201).json(listing); // Yahan return zaroori hai
 
     } catch (error) {
-        return res.status(500).json({message:`UpdateListing Error ${error}`})
+        return res.status(500).json({ message: `UpdateListing Error ${error.message}` });
     }
 }
 
-export const deleteListing = async (req,res) => {
+// deleteListing mein safety check
+export const deleteListing = async (req, res) => {
     try {
-        let {id} = req.params
-        let listing = await Listing.findByIdAndDelete(id)
-        let user = await User.findByIdAndUpdate(listing.host,{
-            $pull:{listing:listing._id}
-        },{new:true})
-        if(!user){
-            return res.status(404).json({message:"user is not found"})
-        }
-        return res.status(201).json({message:"Listing deleted"})
-    } catch (error) {
-        return res.status(500).json({message:`DeleteListing Error ${error}`})
-    }
-    
-}
+        let { id } = req.params;
+        let listing = await Listing.findByIdAndDelete(id);
+        
+        if (!listing) return res.status(404).json({ message: "Listing not found" });
 
+        // Host check karo
+        if (listing.host) {
+            await User.findByIdAndUpdate(listing.host, { $pull: { listing: id } });
+        }
+        
+        return res.status(200).json({ message: "Listing deleted" });
+    } catch (error) {
+        return res.status(500).json({ message: `DeleteListing Error ${error.message}` });
+    }
+}
 export const ratingListing = async (req, res) => {
     try {
         const { id } = req.params;
