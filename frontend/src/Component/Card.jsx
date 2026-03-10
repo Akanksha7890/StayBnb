@@ -114,4 +114,4 @@ function Card({ title, landMark, image1, image2, image3, rent, city, id, ratings
     )
 }
 
-export default Card
+export default Card;
