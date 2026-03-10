@@ -83,17 +83,23 @@ function ListingContext({children}) {
         }
         
      }
-     const handleSearch = async (data) => {
-        try {
-            let result = await axios.get(serverUrl + `/api/listing/search?query=${data}`)
-            setSearchData(result.data)
-        } catch (error) {
-            setSearchData(null)
-            console.log(error)
-            
-        }
-        
-     }
+   // ListingContext.jsx mein handleSearch function update karo
+const handleSearch = async (data) => {
+    // Agar data khali hai, toh request mat bhejo
+    if (!data || data.trim() === "") {
+        console.log("Search query khali hai, request cancel.");
+        setSearchData([]); // Result ko reset kar do
+        return; 
+    }
+
+    try {
+        let result = await axios.get(serverUrl + `/api/listing/search?query=${data}`);
+        setSearchData(result.data);
+    } catch (error) {
+        setSearchData(null);
+        console.log(error);
+    }
+}
 
      const getListing = async () => {
         try {
