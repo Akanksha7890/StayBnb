@@ -24,6 +24,8 @@ function Card({ title, landMark, image1, image2, image3, rent, city, id, ratings
             navigate("/login")
         }
     }
+    // Card.jsx mein yahan check karein
+console.log("Current User Data:", userData);
 
     return (
 
@@ -35,12 +37,12 @@ function Card({ title, landMark, image1, image2, image3, rent, city, id, ratings
             onClick={() => !isBooked ? handleClick() : null}
         >
 
-            {isBooked &&
-                <div className='text-[#2bff18] bg-wheat rounded-lg absolute flex items-center justify-center right-1 top-1 gap-[5px] p-[5px] shadow'>
-                    <GiConfirmed className='w-[20px] h-[20px] text-[#17ff17]' />
-                    Booked
-                </div>
-            }
+            {isBooked && userData !== null && userData !== undefined && userData._id !== undefined && (
+    <div className='text-[#2bff18] bg-wheat rounded-lg absolute flex items-center justify-center right-1 top-1 gap-[5px] p-[5px] shadow'>
+        <GiConfirmed className='w-[20px] h-[20px] text-[#17ff17]' />
+        Booked
+    </div>
+)}
 
             {isBooked && host == userData?._id &&
                 <div className='text-[red] bg-white rounded-lg absolute flex items-center justify-center right-1 top-[50px] gap-[5px] p-[5px] shadow'
