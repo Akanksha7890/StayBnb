@@ -15,35 +15,31 @@ dotenv.config();
 let port = process.env.PORT || 6000;
 let app = express();
 
-// ✅ 1. CORS FIRST (very important)
+// CORS
 app.use(cors({
-    origin: "https://staybnb-frontend.onrender.com",
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+  origin: "https://staybnb-frontend.onrender.com",
+  credentials: true
 }));
 
-app.options("/*", cors()); // allow preflight requests
-
-// ✅ 2. Middlewares
+// Middlewares
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 
-// ✅ 3. Routes
+// Routes
 app.use("/api/auth", authRouter);
 app.use("/api/user", userRouter);
 app.use("/api/listing", listingRouter);
 app.use("/api/booking", bookingRouter);
 
-// ✅ 4. Global Error Handler
+// Error Handler
 app.use((err, req, res, next) => {
-    console.error("Global Error:", err.stack);
-    res.status(500).json({ message: "Something went wrong on the server!" });
+  console.error(err);
+  res.status(500).json({ message: "Server error" });
 });
 
-// ✅ 5. Start Server
+// Server
 app.listen(port, () => {
-    connectDb();
-    console.log(`Server started on port ${port}`);
+  connectDb();
+  console.log(`Server started on port ${port}`);
 });
