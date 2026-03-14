@@ -23,7 +23,7 @@ app.use(cors({
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-app.options("*", cors()); // allow preflight requests
+app.options("/*", cors()); // allow preflight requests
 
 // ✅ 2. Middlewares
 app.use(express.json({ limit: "50mb" }));
