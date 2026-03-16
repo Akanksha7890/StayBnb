@@ -7,18 +7,20 @@ import AuthContext from './Context/AuthContext.jsx'
 import UserContext from './Context/UserContext.jsx'
 import ListingContext from './Context/ListingContext.jsx'
 import BookingContext from './Context/BookingContext.jsx'
+import axios from "axios"
 
+axios.defaults.withCredentials = true   // ⭐ ye line add karo
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-  <AuthContext>
-    <ListingContext>
-    <UserContext>
-      <BookingContext>
-    <App />
-    </BookingContext>
-    </UserContext>
-    </ListingContext>
+    <AuthContext>
+      <ListingContext>
+        <UserContext>
+          <BookingContext>
+            <App />
+          </BookingContext>
+        </UserContext>
+      </ListingContext>
     </AuthContext>
   </BrowserRouter>
 )
